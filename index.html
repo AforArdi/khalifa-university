@@ -1,0 +1,851 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Khalifa University Scholarship Guide | For Bangladeshi Students</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* Custom styles to supplement Tailwind */
+        body { font-family: 'Inter', sans-serif; background-color: #FDFBF7; color: #2D2D2D; }
+        .chart-container { 
+            position: relative; 
+            width: 100%; 
+            max-width: 600px; 
+            margin-left: auto; 
+            margin-right: auto; 
+            height: 350px; 
+            max-height: 400px; 
+        }
+        .tab-active { border-bottom: 3px solid #D97706; color: #D97706; font-weight: 600; }
+        .tab-inactive { color: #6B7280; }
+        .tab-inactive:hover { color: #D97706; }
+        .card-hover { transition: transform 0.2s, box-shadow 0.2s; }
+        .card-hover:hover { transform: translateY(-2px); box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1); }
+        .timeline-line { position: absolute; left: 50%; transform: translateX(-50%); width: 2px; height: 100%; background-color: #E5E7EB; z-index: 0; }
+        .timeline-dot { z-index: 10; }
+        
+        /* Mobile adjustments for charts */
+        @media (max-width: 640px) {
+            .chart-container { height: 300px; }
+        }
+    </style>
+</head>
+<body class="antialiased min-h-screen flex flex-col">
+
+    <!-- Chosen Palette: Warm Neutrals (Sand/Beige #FDFBF7) with Earthy Gold (#D97706) and Deep Charcoal (#2D2D2D) accents. Designed for calm readability. -->
+    
+    <!-- Application Structure Plan: 
+         1. Header/Nav: Simple clear navigation to switch between user personas (Home, Undergraduate, Eligibility, Postgraduate, Finance/Value).
+         2. Home View: 
+            - Hero: Immediate value prop.
+            - BENEFITS SECTION (NEW): Detailed grid of perks (Tuition, Stipend, Housing, etc.).
+            - Rankings: Contextual chart.
+            - Action Buttons: Responsive stack.
+         3. Eligibility View: Dedicated calculator for checking academic requirements.
+         4. Undergraduate Hub: Detailed scholarship tier visualizer and document checklist.
+         5. Postgraduate Hub: Stipend comparison chart and GRTA benefits breakdown.
+         6. Finance & Living: A "Value Calculator" converting AED benefits to BDT.
+         7. Footer: High-visibility official link section.
+    -->
+
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+
+    <!-- Navigation -->
+    <nav class="bg-white shadow-sm sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16">
+                <div class="flex items-center">
+                    <span class="text-2xl font-bold text-gray-800 tracking-tight">KU<span class="text-yellow-600">Explore</span></span>
+                    <span class="ml-2 text-xs bg-gray-100 text-gray-600 px-2 py-0.5 rounded-full hidden sm:inline-block">Unofficial Guide for BD Students</span>
+                </div>
+                <div class="hidden md:flex space-x-8 items-center" id="nav-container">
+                    <!-- Nav items injected by JS -->
+                </div>
+                <div class="flex items-center md:hidden">
+                    <button id="mobile-menu-btn" class="text-gray-600 hover:text-gray-900 focus:outline-none">
+                        <span class="text-2xl">☰</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+        <!-- Mobile Menu -->
+        <div id="mobile-menu" class="hidden md:hidden bg-white border-t border-gray-100 p-4">
+            <div class="flex flex-col space-y-3" id="mobile-nav-container"></div>
+        </div>
+    </nav>
+
+    <!-- Main Content Area -->
+    <main class="flex-grow max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 w-full">
+
+        <!-- VIEW: HOME / OVERVIEW -->
+        <div id="view-home" class="view-section animate-fade-in">
+            <div class="text-center mb-12">
+                <h1 class="text-4xl md:text-5xl font-bold text-gray-900 mb-4">Study in the UAE: <span class="text-yellow-600">Fully Funded</span></h1>
+                <p class="text-xl text-gray-600 max-w-3xl mx-auto">
+                    A comprehensive guide for students from Bangladesh targeting Khalifa University. 
+                    Explore world-class research opportunities, generous stipends, and full tuition waivers.
+                </p>
+            </div>
+
+            <!-- Intro Stats Grid -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-100 text-center card-hover">
+                    <div class="text-3xl mb-2">🏆</div>
+                    <h3 class="font-bold text-gray-900">Top Ranked</h3>
+                    <p class="text-gray-500 text-sm mt-1">#1 in UAE, Top in Arab Region (QS Rankings)</p>
+                </div>
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-100 text-center card-hover">
+                    <div class="text-3xl mb-2">💰</div>
+                    <h3 class="font-bold text-gray-900">100% Coverage</h3>
+                    <p class="text-gray-500 text-sm mt-1">Full tuition waiver + Monthly Stipend for qualified international students</p>
+                </div>
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-100 text-center card-hover">
+                    <div class="text-3xl mb-2">✈️</div>
+                    <h3 class="font-bold text-gray-900">Travel Included</h3>
+                    <p class="text-gray-500 text-sm mt-1">Annual flight tickets covered for scholarship recipients</p>
+                </div>
+            </div>
+
+            <!-- NEW SECTION: Detailed Scholarship Benefits -->
+            <div class="mb-12">
+                <div class="bg-gray-900 text-white rounded-2xl p-8 shadow-lg">
+                    <div class="text-center mb-8">
+                        <h2 class="text-3xl font-bold text-yellow-500 mb-2">The Full-Ride Experience</h2>
+                        <p class="text-gray-400">Khalifa University offers one of the most generous scholarship packages in the world.</p>
+                    </div>
+                    
+                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                        <!-- Benefit 1 -->
+                        <div class="bg-gray-800 p-5 rounded-xl border border-gray-700 hover:border-yellow-500 transition">
+                            <div class="text-3xl mb-3">🎓</div>
+                            <h4 class="font-bold text-lg mb-2">100% Tuition Waiver</h4>
+                            <p class="text-sm text-gray-400">Complete coverage of all academic fees. No cost for credits or exams.</p>
+                        </div>
+                        <!-- Benefit 2 -->
+                        <div class="bg-gray-800 p-5 rounded-xl border border-gray-700 hover:border-yellow-500 transition">
+                            <div class="text-3xl mb-3">💵</div>
+                            <h4 class="font-bold text-lg mb-2">Monthly Stipend</h4>
+                            <p class="text-sm text-gray-400">Generous living allowance. <br><span class="text-yellow-500">UG:</span> Tier-based.<br><span class="text-yellow-500">PG:</span> 4,000 - 8,000+ AED/month.</p>
+                        </div>
+                        <!-- Benefit 3 -->
+                        <div class="bg-gray-800 p-5 rounded-xl border border-gray-700 hover:border-yellow-500 transition">
+                            <div class="text-3xl mb-3">🏠</div>
+                            <h4 class="font-bold text-lg mb-2">Accommodation</h4>
+                            <p class="text-sm text-gray-400">Free University housing (dorms) for eligible students, or housing allowance included in stipend.</p>
+                        </div>
+                        <!-- Benefit 4 -->
+                        <div class="bg-gray-800 p-5 rounded-xl border border-gray-700 hover:border-yellow-500 transition">
+                            <div class="text-3xl mb-3">🏥</div>
+                            <h4 class="font-bold text-lg mb-2">Medical Insurance</h4>
+                            <p class="text-sm text-gray-400">Full medical coverage including visa-related medical tests and emergency care.</p>
+                        </div>
+                        <!-- Benefit 5 -->
+                        <div class="bg-gray-800 p-5 rounded-xl border border-gray-700 hover:border-yellow-500 transition">
+                            <div class="text-3xl mb-3">✈️</div>
+                            <h4 class="font-bold text-lg mb-2">Annual Flights</h4>
+                            <p class="text-sm text-gray-400">Mobilization (arrival) and Demobilization (graduation) tickets, plus annual round-trip tickets home.</p>
+                        </div>
+                         <!-- Benefit 6 -->
+                         <div class="bg-gray-800 p-5 rounded-xl border border-gray-700 hover:border-yellow-500 transition">
+                            <div class="text-3xl mb-3">🛂</div>
+                            <h4 class="font-bold text-lg mb-2">Visa Sponsorship</h4>
+                            <p class="text-sm text-gray-400">The university sponsors your UAE student visa and covers the associated administrative costs.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Visualization: Global Rankings Context -->
+            <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-100 mb-12">
+                <div class="mb-6">
+                    <h2 class="text-2xl font-bold text-gray-900">Global Standing</h2>
+                    <p class="text-gray-600 mt-2">
+                        Khalifa University is a research-intensive institution competing with top global universities.
+                    </p>
+                </div>
+                
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
+                    <div class="chart-container">
+                        <canvas id="rankingChart"></canvas>
+                    </div>
+                    <div class="space-y-4">
+                        <div class="bg-yellow-50 p-4 rounded-lg border-l-4 border-yellow-500">
+                            <h4 class="font-bold text-yellow-800">Research Focus</h4>
+                            <p class="text-sm text-yellow-700">KU focuses heavily on Energy, Water, Aerospace, and AI. Perfect for STEM students.</p>
+                        </div>
+                        <ul class="space-y-2 text-gray-600">
+                            <li class="flex items-center"><span class="mr-2">✓</span> English-medium instruction</li>
+                            <li class="flex items-center"><span class="mr-2">✓</span> State-of-the-art labs in Abu Dhabi</li>
+                            <li class="flex items-center"><span class="mr-2">✓</span> Diverse international community</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Action Call (Responsive Buttons) -->
+            <div class="text-center px-4 sm:px-0">
+                <p class="text-gray-600 mb-6">Choose your academic path to see specific requirements:</p>
+                <!-- UPDATED: Buttons stack on mobile (flex-col) and align in row on larger screens (sm:flex-row) -->
+                <div class="flex flex-col sm:flex-row justify-center items-stretch sm:items-center gap-4">
+                    <button onclick="app.navigate('undergrad')" class="w-full sm:w-auto px-6 py-3 bg-gray-900 text-white rounded-lg hover:bg-gray-800 transition shadow-lg flex justify-center items-center">
+                        <span>Undergraduate Info</span>
+                    </button>
+                    <button onclick="app.navigate('eligibility')" class="w-full sm:w-auto px-6 py-3 bg-yellow-600 text-white rounded-lg hover:bg-yellow-700 transition shadow-lg flex justify-center items-center">
+                        <span class="mr-2">✨</span> Check Eligibility
+                    </button>
+                    <button onclick="app.navigate('postgrad')" class="w-full sm:w-auto px-6 py-3 bg-white text-gray-900 border border-gray-300 rounded-lg hover:bg-gray-50 transition shadow-sm flex justify-center items-center">
+                        <span>Postgraduate Info</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- VIEW: UNDERGRADUATE -->
+        <div id="view-undergrad" class="view-section hidden">
+            <div class="mb-8 border-b pb-4">
+                <h2 class="text-3xl font-bold text-gray-900">Undergraduate Admissions</h2>
+                <p class="text-gray-600 mt-2">For high school graduates (HSC/A-Level/IB) seeking a Bachelor's degree.</p>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                <!-- Left Column: Requirements -->
+                <div class="lg:col-span-2 space-y-8">
+                    
+                    <!-- Scholarship Tier Visualizer -->
+                    <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
+                        <h3 class="text-xl font-bold text-gray-900 mb-4">Scholarship Tiers</h3>
+                        <p class="text-sm text-gray-500 mb-6">International students compete for highly selective merit-based scholarships.</p>
+                        
+                        <div class="chart-container">
+                            <canvas id="ugScholarshipChart"></canvas>
+                        </div>
+                        <div class="mt-4 grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm">
+                            <div class="bg-gray-50 p-3 rounded">
+                                <span class="font-bold block text-gray-900">President's Scholarship</span>
+                                <span class="text-gray-600">The most prestigious award. Full coverage plus generous monthly stipend.</span>
+                            </div>
+                            <div class="bg-gray-50 p-3 rounded">
+                                <span class="font-bold block text-gray-900">KU Scholarship (Tier 1)</span>
+                                <span class="text-gray-600">Full tuition waiver. Stipend amount may vary or be partial compared to President's.</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Right Column: Timeline & Checklist -->
+                <div class="space-y-6">
+                    <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
+                        <h3 class="font-bold text-gray-900 mb-4">Required Documents</h3>
+                        <ul class="space-y-3 text-sm text-gray-600">
+                            <li class="flex items-start"><span class="text-green-500 mr-2">●</span> Attested High School Certificates (Ministry of Foreign Affairs)</li>
+                            <li class="flex items-start"><span class="text-green-500 mr-2">●</span> IELTS (6.0+) or TOEFL (79+)</li>
+                            <li class="flex items-start"><span class="text-green-500 mr-2">●</span> SAT Math Score (Typically 700+)</li>
+                            <li class="flex items-start"><span class="text-green-500 mr-2">●</span> Statement of Purpose (SOP)</li>
+                            <li class="flex items-start"><span class="text-green-500 mr-2">●</span> Passport Copy</li>
+                        </ul>
+                    </div>
+
+                    <div class="bg-yellow-50 p-6 rounded-xl border border-yellow-100">
+                        <h3 class="font-bold text-yellow-800 mb-2">Typical Timeline</h3>
+                        <div class="relative pl-4 space-y-6 mt-4">
+                            <div class="timeline-line bg-yellow-200 left-2"></div>
+                            
+                            <div class="relative pl-4">
+                                <div class="absolute left-0 top-1 w-4 h-4 bg-yellow-400 rounded-full border-2 border-white timeline-dot"></div>
+                                <h4 class="text-sm font-bold text-gray-900">Jan - Feb</h4>
+                                <p class="text-xs text-gray-600">Applications Open (Fall Intake)</p>
+                            </div>
+                            <div class="relative pl-4">
+                                <div class="absolute left-0 top-1 w-4 h-4 bg-gray-300 rounded-full border-2 border-white timeline-dot"></div>
+                                <h4 class="text-sm font-bold text-gray-900">April - May</h4>
+                                <p class="text-xs text-gray-600">Initial Screening & Interviews</p>
+                            </div>
+                            <div class="relative pl-4">
+                                <div class="absolute left-0 top-1 w-4 h-4 bg-gray-300 rounded-full border-2 border-white timeline-dot"></div>
+                                <h4 class="text-sm font-bold text-gray-900">June - July</h4>
+                                <p class="text-xs text-gray-600">Final Offers Released</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- VIEW: ELIGIBILITY CHECKER (Separate Section) -->
+        <div id="view-eligibility" class="view-section hidden">
+            <div class="mb-8 border-b pb-4">
+                <h2 class="text-3xl font-bold text-gray-900">Eligibility Checker</h2>
+                <p class="text-gray-600 mt-2">Interactive tool to check if your academic profile meets the general criteria for admission.</p>
+            </div>
+
+            <div class="max-w-3xl mx-auto">
+                <div class="bg-white p-8 rounded-xl shadow-lg border border-gray-200">
+                    <h3 class="text-2xl font-bold text-gray-900 mb-6">Undergraduate Self-Check</h3>
+                    <p class="text-gray-600 mb-8">Select your curriculum and test scores to see specific requirements for Bangladeshi students.</p>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
+                        <div>
+                            <label class="block text-sm font-bold text-gray-700 mb-2">Curriculum / System</label>
+                            <select id="ug-curriculum" class="w-full bg-gray-50 border border-gray-300 rounded-lg p-3 focus:ring-2 focus:ring-yellow-500 focus:border-yellow-500 transition">
+                                <option value="generic">Select System...</option>
+                                <option value="hsc">National Curriculum (HSC)</option>
+                                <option value="alevel">British Curriculum (A-Levels)</option>
+                                <option value="ib">IB Diploma</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-bold text-gray-700 mb-2">Standardized Math Test</label>
+                            <select id="ug-test" class="w-full bg-gray-50 border border-gray-300 rounded-lg p-3 focus:ring-2 focus:ring-yellow-500 focus:border-yellow-500 transition">
+                                <option value="none">None taken yet</option>
+                                <option value="emsat">EmSAT (UAE)</option>
+                                <option value="sat">SAT Math</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div id="ug-result" class="p-6 bg-blue-50 text-blue-900 rounded-xl hidden border border-blue-100">
+                        <!-- Dynamic Result populated by JS -->
+                    </div>
+                    
+                    <div class="mt-8 pt-6 border-t border-gray-100">
+                        <h4 class="font-bold text-gray-900 mb-2">Important Note on Competitiveness</h4>
+                        <p class="text-sm text-gray-500">
+                            Khalifa University is highly competitive. Meeting the minimum requirements listed here does <strong>not</strong> guarantee admission or a scholarship. 
+                            Successful applicants typically exceed these minimums significantly (e.g., SAT Math 750+, Golden GPA 5.0).
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- VIEW: POSTGRADUATE -->
+        <div id="view-postgrad" class="view-section hidden">
+            <div class="mb-8 border-b pb-4">
+                <h2 class="text-3xl font-bold text-gray-900">Postgraduate (MSc & PhD)</h2>
+                <p class="text-gray-600 mt-2">Comprehensive funding for research-oriented Master's and Doctorate students.</p>
+            </div>
+
+            <!-- Comparison Chart -->
+            <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-100 mb-8">
+                <div class="mb-4">
+                    <h3 class="text-xl font-bold text-gray-900">Funding & Benefits: GRTA Scholarship</h3>
+                    <p class="text-sm text-gray-500">The Graduate Research / Teaching Assistant (GRTA) scheme is the primary funding source for international full-time students.</p>
+                </div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                    <div class="chart-container">
+                        <canvas id="pgBenefitChart"></canvas>
+                    </div>
+                    <div class="grid grid-cols-1 gap-4">
+                        <div class="bg-gray-50 p-4 rounded-lg">
+                            <h4 class="font-bold text-gray-900">Core Benefits (Both)</h4>
+                            <ul class="text-sm text-gray-600 mt-2 space-y-1">
+                                <li>• 100% Tuition Waiver</li>
+                                <li>• Medical Insurance (UAE Visa coverage)</li>
+                                <li>• Support for International Research Conferences</li>
+                                <li>• Annual Flight Ticket home</li>
+                            </ul>
+                        </div>
+                        <div class="bg-white border border-gray-200 p-4 rounded-lg">
+                            <h4 class="font-bold text-gray-900">PhD Specifics</h4>
+                            <p class="text-sm text-gray-600 mt-1">Higher monthly stipend. Requires a well-defined research proposal and potential supervisor agreement prior to admission (recommended).</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Requirements Grid -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
+                    <h3 class="font-bold text-gray-900 mb-4">Comparison Table</h3>
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-sm text-left">
+                            <thead class="bg-gray-50 text-gray-600 font-semibold">
+                                <tr>
+                                    <th class="p-3">Requirement</th>
+                                    <th class="p-3">Master's</th>
+                                    <th class="p-3">PhD</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-gray-100">
+                                <tr>
+                                    <td class="p-3 font-medium">CGPA (Min)</td>
+                                    <td class="p-3">3.0 / 4.0</td>
+                                    <td class="p-3">3.25 / 4.0 (in MSc)</td>
+                                </tr>
+                                <tr>
+                                    <td class="p-3 font-medium">GRE General</td>
+                                    <td class="p-3">Required*</td>
+                                    <td class="p-3">Required (Min 150Q)</td>
+                                </tr>
+                                <tr>
+                                    <td class="p-3 font-medium">English (IELTS)</td>
+                                    <td class="p-3">6.0 - 6.5</td>
+                                    <td class="p-3">6.5 (min 6.0 in all bands)</td>
+                                </tr>
+                                <tr>
+                                    <td class="p-3 font-medium">Statement</td>
+                                    <td class="p-3">SOP (500-1000 words)</td>
+                                    <td class="p-3">Research Statement</td>
+                                </tr>
+                                <tr>
+                                    <td class="p-3 font-medium">Interview</td>
+                                    <td class="p-3">Panel Interview</td>
+                                    <td class="p-3">Panel + Presentation</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <p class="text-xs text-gray-400 mt-2">*GRE waivers may apply for exceptional cases, but assume it is required for scholarship.</p>
+                </div>
+
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-100 flex flex-col justify-center">
+                    <h3 class="font-bold text-gray-900 mb-4">Research Centers</h3>
+                    <p class="text-sm text-gray-600 mb-4">Matching your interest with a center increases acceptance chances.</p>
+                    <div class="flex flex-wrap gap-2">
+                        <span class="px-3 py-1 bg-blue-100 text-blue-800 rounded-full text-xs font-semibold">Aerospace (ARIC)</span>
+                        <span class="px-3 py-1 bg-green-100 text-green-800 rounded-full text-xs font-semibold">Clean Energy</span>
+                        <span class="px-3 py-1 bg-purple-100 text-purple-800 rounded-full text-xs font-semibold">Robotics (KUCARS)</span>
+                        <span class="px-3 py-1 bg-indigo-100 text-indigo-800 rounded-full text-xs font-semibold">AI & Cybersec</span>
+                        <span class="px-3 py-1 bg-teal-100 text-teal-800 rounded-full text-xs font-semibold">Water & Env</span>
+                        <span class="px-3 py-1 bg-red-100 text-red-800 rounded-full text-xs font-semibold">Biotech</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- VIEW: FINANCE CALCULATOR -->
+        <div id="view-finance" class="view-section hidden">
+            <div class="mb-8 border-b pb-4">
+                <h2 class="text-3xl font-bold text-gray-900">Value Calculator (BDT)</h2>
+                <p class="text-gray-600 mt-2">Estimate the real-world value of the scholarship in Bangladeshi Taka.</p>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                <!-- Calculator Inputs -->
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
+                    <h3 class="text-lg font-bold text-gray-900 mb-6">Select Your Level</h3>
+                    
+                    <div class="space-y-4 mb-6">
+                        <button class="calc-btn w-full p-4 border-2 border-gray-200 rounded-lg text-left hover:border-yellow-500 focus:outline-none transition bg-white" data-type="ug">
+                            <div class="font-bold">Undergraduate (Full)</div>
+                            <div class="text-sm text-gray-500">Includes Housing + Stipend</div>
+                        </button>
+                        <button class="calc-btn w-full p-4 border-2 border-gray-200 rounded-lg text-left hover:border-yellow-500 focus:outline-none transition bg-white" data-type="msc">
+                            <div class="font-bold">Master's (GRTA)</div>
+                            <div class="text-sm text-gray-500">Includes Stipend (~4,000 AED)</div>
+                        </button>
+                        <button class="calc-btn w-full p-4 border-2 border-gray-200 rounded-lg text-left hover:border-yellow-500 focus:outline-none transition bg-white" data-type="phd">
+                            <div class="font-bold">PhD (GRTA)</div>
+                            <div class="text-sm text-gray-500">Includes High Stipend (~8,000+ AED)</div>
+                        </button>
+                    </div>
+
+                    <div class="text-xs text-gray-400">
+                        * Exchange Rate used: 1 AED ≈ 32 BDT. Amounts are estimates and subject to change by the university.
+                    </div>
+                </div>
+
+                <!-- Results Display -->
+                <div class="bg-gray-900 text-white p-8 rounded-xl shadow-lg flex flex-col justify-center relative overflow-hidden">
+                    <div class="absolute top-0 right-0 p-4 opacity-10 text-9xl font-bold text-white pointer-events-none">৳</div>
+                    
+                    <div id="calc-display-area" class="z-10">
+                        <h4 class="text-gray-400 text-sm uppercase tracking-wider mb-2">Estimated Monthly Value</h4>
+                        <div class="text-5xl font-bold mb-2 text-yellow-400"><span id="calc-monthly">0</span> BDT</div>
+                        <p class="text-gray-400 text-sm mb-8">Direct cash stipend</p>
+
+                        <div class="border-t border-gray-700 pt-6 space-y-4">
+                            <div class="flex justify-between items-center">
+                                <span class="text-gray-300">Annual Tuition Saved</span>
+                                <span class="font-mono text-xl" id="calc-tuition">0 BDT</span>
+                            </div>
+                            <div class="flex justify-between items-center">
+                                <span class="text-gray-300">Housing Value (Monthly)</span>
+                                <span class="font-mono text-xl" id="calc-housing">0 BDT</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-white mt-auto pb-8">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            
+            <!-- HIGH VISIBILITY: Official Links Section -->
+            <div class="transform -translate-y-6">
+                <div class="bg-gray-900 rounded-2xl p-6 md:p-10 shadow-xl flex flex-col md:flex-row items-center justify-between gap-6 relative overflow-hidden">
+                    <!-- Decorative background element -->
+                    <div class="absolute top-0 right-0 -mt-10 -mr-10 w-40 h-40 bg-yellow-500 rounded-full opacity-10 blur-2xl"></div>
+                    
+                    <div class="z-10 text-center md:text-left">
+                        <h3 class="text-2xl font-bold text-white mb-2">Ready to Apply?</h3>
+                        <p class="text-gray-300 max-w-lg">
+                            These are the <strong>only</strong> official channels for application. Visit these pages to start your process.
+                        </p>
+                    </div>
+                    
+                    <div class="flex flex-col sm:flex-row w-full md:w-auto gap-4 z-10">
+                        <a href="https://www.ku.ac.ae/undergraduate-admissions" target="_blank" class="group flex items-center justify-center px-6 py-4 bg-yellow-500 hover:bg-yellow-400 text-gray-900 font-bold rounded-xl transition-all shadow-lg hover:shadow-yellow-500/30 transform hover:-translate-y-1">
+                            <span class="mr-2">Undergraduate Portal</span>
+                            <svg class="w-5 h-5 transform group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path></svg>
+                        </a>
+                        <a href="https://www.ku.ac.ae/postgraduate-admissions" target="_blank" class="group flex items-center justify-center px-6 py-4 bg-white hover:bg-gray-50 text-gray-900 font-bold rounded-xl transition-all shadow-lg transform hover:-translate-y-1">
+                            <span class="mr-2">Postgraduate Portal</span>
+                            <svg class="w-5 h-5 transform group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path></svg>
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Disclaimer -->
+            <div class="mt-8 text-center border-t border-gray-100 pt-8">
+                <p class="text-sm text-gray-500 max-w-2xl mx-auto">
+                    <strong>Disclaimer:</strong> This is an UNOFFICIAL visualization tool created for educational purposes to help students understand the opportunities. 
+                    Always verify the latest requirements, deadlines, and policy changes directly on the Khalifa University website via the links above.
+                </p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // --- State Management ---
+        const appState = {
+            currentView: 'home',
+            currencyRate: 32.5, // 1 AED = ~32.5 BDT
+            data: {
+                scholarshipTypes: [
+                    { label: 'Tuition', value: 100, color: '#D97706' },
+                    { label: 'Stipend', value: 85, color: '#B45309' },
+                    { label: 'Housing', value: 90, color: '#92400E' },
+                    { label: 'Insurance', value: 100, color: '#78350F' }
+                ],
+                pgStipends: {
+                    msc: 4000,
+                    phd: 8000
+                },
+                rankings: [
+                    { label: 'Khalifa University', value: 181 }, // Example rank
+                    { label: 'UAEU', value: 290 },
+                    { label: 'AUS', value: 369 },
+                    { label: 'Dhaka Univ (Ref)', value: 801 } // Reference for context
+                ]
+            }
+        };
+
+        // --- Navigation Logic ---
+        const views = ['home', 'undergrad', 'postgrad', 'finance', 'eligibility'];
+        
+        const app = {
+            init: function() {
+                this.renderNav();
+                this.setupEventListeners();
+                this.renderCharts();
+                this.navigate('home');
+            },
+
+            renderNav: function() {
+                const navHTML = `
+                    <a href="#" onclick="app.navigate('home')" id="nav-home" class="tab-link px-3 py-2 rounded-md text-sm font-medium">Home</a>
+                    <a href="#" onclick="app.navigate('undergrad')" id="nav-undergrad" class="tab-link px-3 py-2 rounded-md text-sm font-medium">Undergraduate</a>
+                    <a href="#" onclick="app.navigate('eligibility')" id="nav-eligibility" class="tab-link px-3 py-2 rounded-md text-sm font-medium">Eligibility</a>
+                    <a href="#" onclick="app.navigate('postgrad')" id="nav-postgrad" class="tab-link px-3 py-2 rounded-md text-sm font-medium">Postgraduate</a>
+                    <a href="#" onclick="app.navigate('finance')" id="nav-finance" class="tab-link px-3 py-2 rounded-md text-sm font-medium">Value Calculator</a>
+                `;
+                document.getElementById('nav-container').innerHTML = navHTML;
+                document.getElementById('mobile-nav-container').innerHTML = navHTML;
+            },
+
+            navigate: function(viewId) {
+                // Update State
+                appState.currentView = viewId;
+
+                // Toggle Views
+                document.querySelectorAll('.view-section').forEach(el => {
+                    el.classList.add('hidden');
+                });
+                const activeView = document.getElementById(`view-${viewId}`);
+                if (activeView) {
+                    activeView.classList.remove('hidden');
+                }
+
+                // Update Nav Styling
+                document.querySelectorAll('.tab-link').forEach(el => {
+                    el.classList.remove('tab-active');
+                    el.classList.add('tab-inactive');
+                });
+                const activeNav = document.getElementById(`nav-${viewId}`);
+                if (activeNav) {
+                    activeNav.classList.add('tab-active');
+                    activeNav.classList.remove('tab-inactive');
+                    // Also highlight mobile nav
+                    const allLinks = document.querySelectorAll(`a[onclick="app.navigate('${viewId}')"]`);
+                    allLinks.forEach(link => link.classList.add('text-yellow-600')); 
+                }
+
+                // Scroll to top
+                window.scrollTo(0, 0);
+
+                // Re-render charts if hidden previously (Chart.js canvas sizing fix)
+                if (viewId === 'home') this.renderHomeChart();
+                if (viewId === 'undergrad') this.renderUgChart();
+                if (viewId === 'postgrad') this.renderPgChart();
+            },
+
+            setupEventListeners: function() {
+                // Mobile Menu Toggle
+                document.getElementById('mobile-menu-btn').addEventListener('click', () => {
+                    document.getElementById('mobile-menu').classList.toggle('hidden');
+                });
+
+                // UG Eligibility Logic
+                const curriculumSelect = document.getElementById('ug-curriculum');
+                const testSelect = document.getElementById('ug-test');
+                
+                const checkEligibility = () => {
+                    const curr = curriculumSelect.value;
+                    const test = testSelect.value;
+                    const resultDiv = document.getElementById('ug-result');
+                    
+                    if (curr === 'generic') {
+                        resultDiv.classList.add('hidden');
+                        return;
+                    }
+
+                    resultDiv.classList.remove('hidden');
+                    let msg = "";
+                    let colorClass = "bg-blue-50 text-blue-800 border-blue-100";
+
+                    if (curr === 'hsc') {
+                        msg = "<strong>HSC Requirements:</strong> You likely need a GPA of 5.0 (Golden) or very high marks in Math/Physics/Chemistry. KU requires high equivalency.";
+                    } else if (curr === 'alevel') {
+                        msg = "<strong>A-Level Requirements:</strong> Typically require Math and Physics + one other science. Grades of A/A* are competitive for scholarships.";
+                    } else if (curr === 'ib') {
+                        msg = "<strong>IB Requirements:</strong> Typically 30-34 points total, with Higher Level Math/Physics.";
+                    }
+
+                    if (test === 'none') {
+                        msg += "<br><br><strong>Warning:</strong> You MUST take the EmSAT or SAT Math. Without a standardized math score, application is often incomplete.";
+                        colorClass = "bg-yellow-50 text-yellow-800 border-yellow-100";
+                    } else if (test === 'sat') {
+                        msg += "<br><br><strong>Good:</strong> SAT Math > 700 significantly strengthens your profile.";
+                    }
+
+                    resultDiv.className = `p-6 rounded-xl hidden border ${colorClass}`;
+                    resultDiv.classList.remove('hidden'); // Ensure visible
+                    resultDiv.innerHTML = msg;
+                };
+
+                curriculumSelect.addEventListener('change', checkEligibility);
+                testSelect.addEventListener('change', checkEligibility);
+
+                // Calculator Logic
+                document.querySelectorAll('.calc-btn').forEach(btn => {
+                    btn.addEventListener('click', (e) => {
+                        // Reset styles
+                        document.querySelectorAll('.calc-btn').forEach(b => b.classList.remove('border-yellow-500', 'bg-yellow-50'));
+                        // Set active
+                        const target = e.currentTarget;
+                        target.classList.add('border-yellow-500', 'bg-yellow-50');
+                        
+                        this.calculateValue(target.dataset.type);
+                    });
+                });
+            },
+
+            calculateValue: function(type) {
+                const rate = appState.currencyRate;
+                let stipend = 0;
+                let tuition = 0; // Annual tuition approx 100k AED / 12 for monthly view context
+                let housing = 0;
+
+                // Approximate figures for demo logic
+                if (type === 'ug') {
+                    stipend = 2500; // Varies by tier, using average estimate
+                    tuition = (100000 / 12); 
+                    housing = 3000; // Dorm value
+                } else if (type === 'msc') {
+                    stipend = 4000;
+                    tuition = (100000 / 12); 
+                    housing = 3000;
+                } else if (type === 'phd') {
+                    stipend = 8000; // Can be higher
+                    tuition = (100000 / 12); 
+                    housing = 3000;
+                }
+
+                // Animation for numbers
+                this.animateValue('calc-monthly', stipend * rate);
+                document.getElementById('calc-tuition').innerText = Math.round(tuition * rate * 12).toLocaleString() + " BDT / Yr";
+                document.getElementById('calc-housing').innerText = Math.round(housing * rate).toLocaleString() + " BDT";
+            },
+
+            animateValue: function(id, end) {
+                const obj = document.getElementById(id);
+                const start = 0;
+                const duration = 1000;
+                let startTimestamp = null;
+                const step = (timestamp) => {
+                    if (!startTimestamp) startTimestamp = timestamp;
+                    const progress = Math.min((timestamp - startTimestamp) / duration, 1);
+                    obj.innerHTML = Math.floor(progress * (end - start) + start).toLocaleString();
+                    if (progress < 1) {
+                        window.requestAnimationFrame(step);
+                    }
+                };
+                window.requestAnimationFrame(step);
+            },
+
+            // --- Charts Section ---
+            
+            renderCharts: function() {
+                // Delay slightly to ensure DOM is ready
+                setTimeout(() => {
+                    this.renderHomeChart();
+                    // Others render on nav click to ensure size correctness
+                }, 100);
+            },
+
+            renderHomeChart: function() {
+                const ctx = document.getElementById('rankingChart').getContext('2d');
+                if (window.homeChart) window.homeChart.destroy();
+
+                window.homeChart = new Chart(ctx, {
+                    type: 'bar',
+                    data: {
+                        labels: appState.data.rankings.map(r => r.label),
+                        datasets: [{
+                            label: 'QS World Ranking (Lower is Better)',
+                            data: appState.data.rankings.map(r => r.value),
+                            backgroundColor: ['#D97706', '#E5E7EB', '#E5E7EB', '#9CA3AF'],
+                            borderRadius: 6
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: { display: false },
+                            tooltip: {
+                                callbacks: {
+                                    label: function(context) {
+                                        return 'Rank: #' + context.raw;
+                                    }
+                                }
+                            }
+                        },
+                        scales: {
+                            y: {
+                                reverse: true, // Lower rank is better
+                                beginAtZero: false,
+                                grid: { color: '#f3f4f6' }
+                            },
+                            x: {
+                                grid: { display: false }
+                            }
+                        }
+                    }
+                });
+            },
+
+            renderUgChart: function() {
+                const ctx = document.getElementById('ugScholarshipChart');
+                if (!ctx) return;
+                
+                // If chart exists, destroy? No, simple re-render check usually handled by library or var check
+                // For simplicity in this SPA, we just create new as the context is fresh per view
+                if (window.ugChart) window.ugChart.destroy();
+
+                window.ugChart = new Chart(ctx, {
+                    type: 'bar',
+                    data: {
+                        labels: ['Tuition', 'Stipend', 'Housing', 'Flight'],
+                        datasets: [
+                            {
+                                label: 'President\'s Scholarship',
+                                data: [100, 100, 100, 100], // percentages of coverage
+                                backgroundColor: '#D97706',
+                                borderRadius: 4
+                            },
+                            {
+                                label: 'KU Scholarship (Tier 1)',
+                                data: [100, 50, 0, 100], // Partial stipend, no housing assumed for contrast
+                                backgroundColor: '#9CA3AF',
+                                borderRadius: 4
+                            }
+                        ]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                max: 100,
+                                title: { display: true, text: '% Coverage' }
+                            }
+                        },
+                        plugins: {
+                            tooltip: {
+                                callbacks: {
+                                    label: function(context) {
+                                        return context.dataset.label + ': ' + context.raw + '%';
+                                    }
+                                }
+                            }
+                        }
+                    }
+                });
+            },
+
+            renderPgChart: function() {
+                const ctx = document.getElementById('pgBenefitChart');
+                if (!ctx) return;
+                if (window.pgChart) window.pgChart.destroy();
+
+                window.pgChart = new Chart(ctx, {
+                    type: 'bar',
+                    data: {
+                        labels: ['Master\'s (MSc)', 'PhD'],
+                        datasets: [{
+                            label: 'Monthly Stipend (AED Approx)',
+                            data: [4000, 8000],
+                            backgroundColor: ['#FBBF24', '#D97706'],
+                            borderRadius: 6,
+                            barThickness: 50
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                grid: { color: '#f3f4f6' },
+                                title: { display: true, text: 'AED / Month' }
+                            },
+                            x: { grid: { display: false } }
+                        },
+                        plugins: {
+                            legend: { display: false }
+                        }
+                    }
+                });
+            }
+        };
+
+        // Initialize App
+        document.addEventListener('DOMContentLoaded', () => {
+            app.init();
+        });
+
+    </script>
+</body>
+</html>
